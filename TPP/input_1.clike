@@ -1,0 +1,7 @@
+global void foo () 
+{
+  {expr v = 0 ; 
+    declare int x ;   }
+    postincr(i); 
+   return void ; 
+}

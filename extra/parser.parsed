@@ -1,0 +1,14 @@
+global void test() : function definition 
+{
+    declare char t; :  declaration statement
+    expr t = add(t,j); :  expression statement
+    expr x = 5 lt 3; :  expression statement
+    in case that ( (neg(x and y))) : conditional statement
+    do 
+    {
+        return x lt y; : return statement
+    }
+    
+    return call r->st[4]('h,add(v,c)); : return statement
+    
+}

@@ -1,0 +1,77 @@
+ID: global
+datatype: void
+ID: test
+special symbol: (
+special symbol: )
+
+
+ID: declare
+datatype: char
+ID: t
+punctuation: ;
+
+ID: expr
+ID: t
+operator: =
+ID: add
+special symbol: (
+ID: t
+punctuation: ,
+ID: j
+special symbol: )
+punctuation: ;
+
+ID: expr
+ID: x
+operator: =
+constant: 5
+reserved keyword: lt
+constant: 3
+punctuation: ;
+
+reserved keyword: in case that
+special symbol: (
+special symbol: (
+ID: neg
+special symbol: (
+ID: x
+reserved keyword: and
+ID: y
+special symbol: )
+special symbol: )
+special symbol: )
+
+reserved keyword: do
+
+
+reserved keyword: return
+ID: x
+reserved keyword: lt
+ID: y
+punctuation: ;
+
+
+
+reserved keyword: return
+ID: call
+ID: r
+operator: -
+ID: st
+special symbol: [
+constant: 4
+special symbol: ]
+special symbol: (
+punctuation: '
+ID: h
+punctuation: '
+punctuation: ,
+ID: add
+special symbol: (
+ID: v
+punctuation: ,
+ID: c
+special symbol: )
+special symbol: )
+punctuation: ;
+
+

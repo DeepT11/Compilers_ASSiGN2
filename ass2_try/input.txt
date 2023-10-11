@@ -1,0 +1,4 @@
+global void main ()
+{
+declare int x;
+}

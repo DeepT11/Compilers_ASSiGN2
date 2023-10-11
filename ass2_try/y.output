@@ -1,0 +1,3095 @@
+   0  $accept : program $end
+
+   1  program : program func
+   2          | func
+
+   3  func : func_method
+   4       | func_class
+
+   5  $$1 :
+
+   6  $$2 :
+
+   7  func_method : METHOD VOID ID LP_BRACE RP_BRACE $$1 LC_BRACE body $$2 RC_BRACE
+
+   8  $$3 :
+
+   9  $$4 :
+
+  10  func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE
+
+  11  args : args COMMA arg
+  12       | arg
+
+  13  arg : RETURN_TYPE_FUNC ID
+
+  14  $$5 :
+
+  15  func_class : CLASS ID LP_BRACE RP_BRACE $$5 LC_BRACE body_class RC_BRACE
+
+  16  $$6 :
+
+  17  func_class : CLASS ID LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 LC_BRACE body_class_methods RC_BRACE
+
+  18  body : body_method
+
+  19  body_method : body_method rest
+  20              | rest
+
+  21  rest : LC_BRACE body_method RC_BRACE
+  22       | rest_m
+
+  23  rest_m : decls
+  24         | stmts
+  25         | exp_stmt
+  26         | calls
+  27         | return_stmt
+  28         | return_stmt_void
+
+  29  $$7 :
+
+  30  rest_m : RETURN $$7 calls
+
+  31  body_class : body_class rest_class
+  32             | rest_class
+
+  33  rest_class : unary_stmts SEMICOLON
+  34             | decls
+
+  35  body_class_methods : body_class_methods rest_class_methods
+  36                     | rest_class_methods
+
+  37  rest_class_methods : stmts
+  38                     | decls
+  39                     | exp_stmt
+  40                     | calls
+  41                     | func_method
+
+  42  return_stmt : RETURN TRUE_KEY SEMICOLON
+  43              | RETURN FALSE_KEY SEMICOLON
+  44              | RETURN ID SEMICOLON
+
+  45  return_stmt_void : RETURN VOID SEMICOLON
+
+  46  stmts : loops
+  47        | cond_stmts
+  48        | unary_stmts SEMICOLON
+
+  49  $$8 :
+
+  50  loops : LOOP WHILE LP_BRACE predicate RP_BRACE $$8 DO LC_BRACE body RC_BRACE
+
+  51  $$9 :
+
+  52  loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE
+
+  53  $$10 :
+
+  54  loops : FOR LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE $$10 LC_BRACE body RC_BRACE
+
+  55  cond_stmts : if_stmt otherwise_stmt
+  56             | if_stmt
+
+  57  $$11 :
+
+  58  if_stmt : IF LP_BRACE predicate RP_BRACE $$11 DO LC_BRACE body RC_BRACE
+
+  59  $$12 :
+
+  60  otherwise_stmt : ELSE $$12 LC_BRACE body RC_BRACE
+
+  61  decls : DECLARATION RETURN_TYPE_FUNC dec SEMICOLON
+  62        | DECLARATION ID dec SEMICOLON
+
+  63  dec : dec COMMA ID
+  64      | ID
+
+  65  exp_stmt : EXPRESSION ID ASSIGN assign_exp SEMICOLON
+
+  66  assign_exp : unary_stmts
+  67             | INTEGERS
+  68             | ARGUMENTS
+  69             | ID
+  70             | "true"
+  71             | "false"
+  72             | ADD LP_BRACE assign_exp COMMA assign_exp RP_BRACE
+  73             | SUB LP_BRACE assign_exp COMMA assign_exp RP_BRACE
+  74             | MUL LP_BRACE assign_exp COMMA assign_exp RP_BRACE
+  75             | DIV LP_BRACE assign_exp COMMA assign_exp RP_BRACE
+  76             | LP_BRACE assign_exp RP_BRACE
+
+  77  calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON
+  78        | CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON
+  79        | CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON
+  80        | CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON
+  81        | CALL_STMT ID CALL_OP ID LP_BRACE RP_BRACE SEMICOLON
+  82        | CALL_STMT ID LP_BRACE RP_BRACE SEMICOLON
+  83        | CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON
+  84        | CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON
+
+  85  unary_stmts : POSTINCR LP_BRACE extras RP_BRACE
+  86              | POSTDECR LP_BRACE extras RP_BRACE
+
+  87  predicate : predicate AND predicate
+  88            | predicate OR predicate
+  89            | predicate PREDICATE_OP predicate
+  90            | LP_BRACE predicate RP_BRACE
+  91            | expr_pred
+
+  92  expr_pred : arth_pred
+  93            | NEG expr_pred
+  94            | expr_pred ASSIGN NEG expr_pred
+  95            | calls
+
+  96  arth_pred : ADD LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+  97            | SUB LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+  98            | MUL LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+  99            | DIV LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+ 100            | extras
+
+ 101  extras :
+ 102         | unary_stmts
+ 103         | ID
+ 104         | INTEGERS
+ 105         | ARGUMENTS
+
+state 0
+	$accept : . program $end  (0)
+
+	CLASS  shift 1
+	METHOD  shift 2
+	.  error
+
+	program  goto 3
+	func  goto 4
+	func_method  goto 5
+	func_class  goto 6
+
+
+state 1
+	func_class : CLASS . ID LP_BRACE RP_BRACE $$5 LC_BRACE body_class RC_BRACE  (15)
+	func_class : CLASS . ID LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 LC_BRACE body_class_methods RC_BRACE  (17)
+
+	ID  shift 7
+	.  error
+
+
+state 2
+	func_method : METHOD . VOID ID LP_BRACE RP_BRACE $$1 LC_BRACE body $$2 RC_BRACE  (7)
+	func_method : METHOD . RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	RETURN_TYPE_FUNC  shift 8
+	VOID  shift 9
+	.  error
+
+
+state 3
+	$accept : program . $end  (0)
+	program : program . func  (1)
+
+	$end  accept
+	CLASS  shift 1
+	METHOD  shift 2
+	.  error
+
+	func  goto 10
+	func_method  goto 5
+	func_class  goto 6
+
+
+state 4
+	program : func .  (2)
+
+	.  reduce 2
+
+
+state 5
+	func : func_method .  (3)
+
+	.  reduce 3
+
+
+state 6
+	func : func_class .  (4)
+
+	.  reduce 4
+
+
+state 7
+	func_class : CLASS ID . LP_BRACE RP_BRACE $$5 LC_BRACE body_class RC_BRACE  (15)
+	func_class : CLASS ID . LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 LC_BRACE body_class_methods RC_BRACE  (17)
+
+	LP_BRACE  shift 11
+	LSQ_BRACE  shift 12
+	.  error
+
+
+state 8
+	func_method : METHOD RETURN_TYPE_FUNC . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	ID  shift 13
+	.  error
+
+
+state 9
+	func_method : METHOD VOID . ID LP_BRACE RP_BRACE $$1 LC_BRACE body $$2 RC_BRACE  (7)
+
+	ID  shift 14
+	.  error
+
+
+state 10
+	program : program func .  (1)
+
+	.  reduce 1
+
+
+state 11
+	func_class : CLASS ID LP_BRACE . RP_BRACE $$5 LC_BRACE body_class RC_BRACE  (15)
+
+	RP_BRACE  shift 15
+	.  error
+
+
+state 12
+	func_class : CLASS ID LSQ_BRACE . ARGUMENTS RSQ_BRACE $$6 LC_BRACE body_class_methods RC_BRACE  (17)
+
+	ARGUMENTS  shift 16
+	.  error
+
+
+state 13
+	func_method : METHOD RETURN_TYPE_FUNC ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	LSQ_BRACE  shift 17
+	.  error
+
+
+state 14
+	func_method : METHOD VOID ID . LP_BRACE RP_BRACE $$1 LC_BRACE body $$2 RC_BRACE  (7)
+
+	LP_BRACE  shift 18
+	.  error
+
+
+state 15
+	func_class : CLASS ID LP_BRACE RP_BRACE . $$5 LC_BRACE body_class RC_BRACE  (15)
+	$$5 : .  (14)
+
+	.  reduce 14
+
+	$$5  goto 19
+
+
+state 16
+	func_class : CLASS ID LSQ_BRACE ARGUMENTS . RSQ_BRACE $$6 LC_BRACE body_class_methods RC_BRACE  (17)
+
+	RSQ_BRACE  shift 20
+	.  error
+
+
+state 17
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	ARGUMENTS  shift 21
+	.  error
+
+
+state 18
+	func_method : METHOD VOID ID LP_BRACE . RP_BRACE $$1 LC_BRACE body $$2 RC_BRACE  (7)
+
+	RP_BRACE  shift 22
+	.  error
+
+
+state 19
+	func_class : CLASS ID LP_BRACE RP_BRACE $$5 . LC_BRACE body_class RC_BRACE  (15)
+
+	LC_BRACE  shift 23
+	.  error
+
+
+state 20
+	func_class : CLASS ID LSQ_BRACE ARGUMENTS RSQ_BRACE . $$6 LC_BRACE body_class_methods RC_BRACE  (17)
+	$$6 : .  (16)
+
+	.  reduce 16
+
+	$$6  goto 24
+
+
+state 21
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	RSQ_BRACE  shift 25
+	.  error
+
+
+state 22
+	func_method : METHOD VOID ID LP_BRACE RP_BRACE . $$1 LC_BRACE body $$2 RC_BRACE  (7)
+	$$1 : .  (5)
+
+	.  reduce 5
+
+	$$1  goto 26
+
+
+state 23
+	func_class : CLASS ID LP_BRACE RP_BRACE $$5 LC_BRACE . body_class RC_BRACE  (15)
+
+	DECLARATION  shift 27
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body_class  goto 30
+	decls  goto 31
+	rest_class  goto 32
+	unary_stmts  goto 33
+
+
+state 24
+	func_class : CLASS ID LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 . LC_BRACE body_class_methods RC_BRACE  (17)
+
+	LC_BRACE  shift 34
+	.  error
+
+
+state 25
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	LP_BRACE  shift 35
+	.  error
+
+
+state 26
+	func_method : METHOD VOID ID LP_BRACE RP_BRACE $$1 . LC_BRACE body $$2 RC_BRACE  (7)
+
+	LC_BRACE  shift 36
+	.  error
+
+
+state 27
+	decls : DECLARATION . RETURN_TYPE_FUNC dec SEMICOLON  (61)
+	decls : DECLARATION . ID dec SEMICOLON  (62)
+
+	RETURN_TYPE_FUNC  shift 37
+	ID  shift 38
+	.  error
+
+
+state 28
+	unary_stmts : POSTINCR . LP_BRACE extras RP_BRACE  (85)
+
+	LP_BRACE  shift 39
+	.  error
+
+
+state 29
+	unary_stmts : POSTDECR . LP_BRACE extras RP_BRACE  (86)
+
+	LP_BRACE  shift 40
+	.  error
+
+
+state 30
+	func_class : CLASS ID LP_BRACE RP_BRACE $$5 LC_BRACE body_class . RC_BRACE  (15)
+	body_class : body_class . rest_class  (31)
+
+	RC_BRACE  shift 41
+	DECLARATION  shift 27
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	decls  goto 31
+	rest_class  goto 42
+	unary_stmts  goto 33
+
+
+state 31
+	rest_class : decls .  (34)
+
+	.  reduce 34
+
+
+state 32
+	body_class : rest_class .  (32)
+
+	.  reduce 32
+
+
+state 33
+	rest_class : unary_stmts . SEMICOLON  (33)
+
+	SEMICOLON  shift 43
+	.  error
+
+
+state 34
+	func_class : CLASS ID LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 LC_BRACE . body_class_methods RC_BRACE  (17)
+
+	IF  shift 44
+	FOR  shift 45
+	METHOD  shift 2
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	func_method  goto 49
+	body_class_methods  goto 50
+	decls  goto 51
+	stmts  goto 52
+	exp_stmt  goto 53
+	calls  goto 54
+	unary_stmts  goto 55
+	rest_class_methods  goto 56
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 35
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+
+	RETURN_TYPE_FUNC  shift 60
+	.  error
+
+	args  goto 61
+	arg  goto 62
+
+
+state 36
+	func_method : METHOD VOID ID LP_BRACE RP_BRACE $$1 LC_BRACE . body $$2 RC_BRACE  (7)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 65
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 37
+	decls : DECLARATION RETURN_TYPE_FUNC . dec SEMICOLON  (61)
+
+	ID  shift 75
+	.  error
+
+	dec  goto 76
+
+
+state 38
+	decls : DECLARATION ID . dec SEMICOLON  (62)
+
+	ID  shift 75
+	.  error
+
+	dec  goto 77
+
+
+state 39
+	unary_stmts : POSTINCR LP_BRACE . extras RP_BRACE  (85)
+	extras : .  (101)
+
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+
+	unary_stmts  goto 81
+	extras  goto 82
+
+
+state 40
+	unary_stmts : POSTDECR LP_BRACE . extras RP_BRACE  (86)
+	extras : .  (101)
+
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+
+	unary_stmts  goto 81
+	extras  goto 83
+
+
+state 41
+	func_class : CLASS ID LP_BRACE RP_BRACE $$5 LC_BRACE body_class RC_BRACE .  (15)
+
+	.  reduce 15
+
+
+state 42
+	body_class : body_class rest_class .  (31)
+
+	.  reduce 31
+
+
+state 43
+	rest_class : unary_stmts SEMICOLON .  (33)
+
+	.  reduce 33
+
+
+state 44
+	if_stmt : IF . LP_BRACE predicate RP_BRACE $$11 DO LC_BRACE body RC_BRACE  (58)
+
+	LP_BRACE  shift 84
+	.  error
+
+
+state 45
+	loops : FOR . LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE  (52)
+	loops : FOR . LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE $$10 LC_BRACE body RC_BRACE  (54)
+
+	LP_BRACE  shift 85
+	.  error
+
+
+state 46
+	exp_stmt : EXPRESSION . ID ASSIGN assign_exp SEMICOLON  (65)
+
+	ID  shift 86
+	.  error
+
+
+state 47
+	calls : CALL_STMT . ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT . "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT . ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+	calls : CALL_STMT . "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+	calls : CALL_STMT . ID CALL_OP ID LP_BRACE RP_BRACE SEMICOLON  (81)
+	calls : CALL_STMT . ID LP_BRACE RP_BRACE SEMICOLON  (82)
+	calls : CALL_STMT . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (83)
+	calls : CALL_STMT . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (84)
+
+	ID  shift 87
+	"this"  shift 88
+	.  error
+
+
+state 48
+	loops : LOOP . WHILE LP_BRACE predicate RP_BRACE $$8 DO LC_BRACE body RC_BRACE  (50)
+
+	WHILE  shift 89
+	.  error
+
+
+state 49
+	rest_class_methods : func_method .  (41)
+
+	.  reduce 41
+
+
+state 50
+	func_class : CLASS ID LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 LC_BRACE body_class_methods . RC_BRACE  (17)
+	body_class_methods : body_class_methods . rest_class_methods  (35)
+
+	RC_BRACE  shift 90
+	IF  shift 44
+	FOR  shift 45
+	METHOD  shift 2
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	func_method  goto 49
+	decls  goto 51
+	stmts  goto 52
+	exp_stmt  goto 53
+	calls  goto 54
+	unary_stmts  goto 55
+	rest_class_methods  goto 91
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 51
+	rest_class_methods : decls .  (38)
+
+	.  reduce 38
+
+
+state 52
+	rest_class_methods : stmts .  (37)
+
+	.  reduce 37
+
+
+state 53
+	rest_class_methods : exp_stmt .  (39)
+
+	.  reduce 39
+
+
+state 54
+	rest_class_methods : calls .  (40)
+
+	.  reduce 40
+
+
+state 55
+	stmts : unary_stmts . SEMICOLON  (48)
+
+	SEMICOLON  shift 92
+	.  error
+
+
+state 56
+	body_class_methods : rest_class_methods .  (36)
+
+	.  reduce 36
+
+
+state 57
+	stmts : loops .  (46)
+
+	.  reduce 46
+
+
+state 58
+	stmts : cond_stmts .  (47)
+
+	.  reduce 47
+
+
+state 59
+	cond_stmts : if_stmt . otherwise_stmt  (55)
+	cond_stmts : if_stmt .  (56)
+
+	ELSE  shift 93
+	RC_BRACE  reduce 56
+	IF  reduce 56
+	FOR  reduce 56
+	METHOD  reduce 56
+	DECLARATION  reduce 56
+	EXPRESSION  reduce 56
+	CALL_STMT  reduce 56
+	RETURN  reduce 56
+	LC_BRACE  reduce 56
+	LOOP  reduce 56
+	POSTINCR  reduce 56
+	POSTDECR  reduce 56
+
+	otherwise_stmt  goto 94
+
+
+state 60
+	arg : RETURN_TYPE_FUNC . ID  (13)
+
+	ID  shift 95
+	.  error
+
+
+state 61
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args . RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE  (10)
+	args : args . COMMA arg  (11)
+
+	RP_BRACE  shift 96
+	COMMA  shift 97
+	.  error
+
+
+state 62
+	args : arg .  (12)
+
+	.  reduce 12
+
+
+state 63
+	rest_m : RETURN . $$7 calls  (30)
+	return_stmt : RETURN . TRUE_KEY SEMICOLON  (42)
+	return_stmt : RETURN . FALSE_KEY SEMICOLON  (43)
+	return_stmt : RETURN . ID SEMICOLON  (44)
+	return_stmt_void : RETURN . VOID SEMICOLON  (45)
+	$$7 : .  (29)
+
+	ID  shift 98
+	VOID  shift 99
+	TRUE_KEY  shift 100
+	FALSE_KEY  shift 101
+	CALL_STMT  reduce 29
+
+	$$7  goto 102
+
+
+state 64
+	rest : LC_BRACE . body_method RC_BRACE  (21)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body_method  goto 103
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 65
+	func_method : METHOD VOID ID LP_BRACE RP_BRACE $$1 LC_BRACE body . $$2 RC_BRACE  (7)
+	$$2 : .  (6)
+
+	.  reduce 6
+
+	$$2  goto 104
+
+
+state 66
+	body : body_method .  (18)
+	body_method : body_method . rest  (19)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	RC_BRACE  reduce 18
+
+	rest  goto 105
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 67
+	body_method : rest .  (20)
+
+	.  reduce 20
+
+
+state 68
+	rest : rest_m .  (22)
+
+	.  reduce 22
+
+
+state 69
+	rest_m : decls .  (23)
+
+	.  reduce 23
+
+
+state 70
+	rest_m : stmts .  (24)
+
+	.  reduce 24
+
+
+state 71
+	rest_m : exp_stmt .  (25)
+
+	.  reduce 25
+
+
+state 72
+	rest_m : calls .  (26)
+
+	.  reduce 26
+
+
+state 73
+	rest_m : return_stmt .  (27)
+
+	.  reduce 27
+
+
+state 74
+	rest_m : return_stmt_void .  (28)
+
+	.  reduce 28
+
+
+state 75
+	dec : ID .  (64)
+
+	.  reduce 64
+
+
+state 76
+	decls : DECLARATION RETURN_TYPE_FUNC dec . SEMICOLON  (61)
+	dec : dec . COMMA ID  (63)
+
+	SEMICOLON  shift 106
+	COMMA  shift 107
+	.  error
+
+
+state 77
+	decls : DECLARATION ID dec . SEMICOLON  (62)
+	dec : dec . COMMA ID  (63)
+
+	SEMICOLON  shift 108
+	COMMA  shift 107
+	.  error
+
+
+state 78
+	extras : INTEGERS .  (104)
+
+	.  reduce 104
+
+
+state 79
+	extras : ID .  (103)
+
+	.  reduce 103
+
+
+state 80
+	extras : ARGUMENTS .  (105)
+
+	.  reduce 105
+
+
+state 81
+	extras : unary_stmts .  (102)
+
+	.  reduce 102
+
+
+state 82
+	unary_stmts : POSTINCR LP_BRACE extras . RP_BRACE  (85)
+
+	RP_BRACE  shift 109
+	.  error
+
+
+state 83
+	unary_stmts : POSTDECR LP_BRACE extras . RP_BRACE  (86)
+
+	RP_BRACE  shift 110
+	.  error
+
+
+state 84
+	if_stmt : IF LP_BRACE . predicate RP_BRACE $$11 DO LC_BRACE body RC_BRACE  (58)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 118
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 85
+	loops : FOR LP_BRACE . exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE  (52)
+	loops : FOR LP_BRACE . exp_stmt predicate SEMICOLON RP_BRACE $$10 LC_BRACE body RC_BRACE  (54)
+
+	EXPRESSION  shift 46
+	.  error
+
+	exp_stmt  goto 122
+
+
+state 86
+	exp_stmt : EXPRESSION ID . ASSIGN assign_exp SEMICOLON  (65)
+
+	ASSIGN  shift 123
+	.  error
+
+
+state 87
+	calls : CALL_STMT ID . CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID . CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+	calls : CALL_STMT ID . CALL_OP ID LP_BRACE RP_BRACE SEMICOLON  (81)
+	calls : CALL_STMT ID . LP_BRACE RP_BRACE SEMICOLON  (82)
+	calls : CALL_STMT ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (83)
+	calls : CALL_STMT ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (84)
+
+	LP_BRACE  shift 124
+	CALL_OP  shift 125
+	LSQ_BRACE  shift 126
+	.  error
+
+
+state 88
+	calls : CALL_STMT "this" . CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" . CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	CALL_OP  shift 127
+	.  error
+
+
+state 89
+	loops : LOOP WHILE . LP_BRACE predicate RP_BRACE $$8 DO LC_BRACE body RC_BRACE  (50)
+
+	LP_BRACE  shift 128
+	.  error
+
+
+state 90
+	func_class : CLASS ID LSQ_BRACE ARGUMENTS RSQ_BRACE $$6 LC_BRACE body_class_methods RC_BRACE .  (17)
+
+	.  reduce 17
+
+
+state 91
+	body_class_methods : body_class_methods rest_class_methods .  (35)
+
+	.  reduce 35
+
+
+state 92
+	stmts : unary_stmts SEMICOLON .  (48)
+
+	.  reduce 48
+
+
+state 93
+	otherwise_stmt : ELSE . $$12 LC_BRACE body RC_BRACE  (60)
+	$$12 : .  (59)
+
+	.  reduce 59
+
+	$$12  goto 129
+
+
+state 94
+	cond_stmts : if_stmt otherwise_stmt .  (55)
+
+	.  reduce 55
+
+
+state 95
+	arg : RETURN_TYPE_FUNC ID .  (13)
+
+	.  reduce 13
+
+
+state 96
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE . $$3 LC_BRACE body $$4 RC_BRACE  (10)
+	$$3 : .  (8)
+
+	.  reduce 8
+
+	$$3  goto 130
+
+
+state 97
+	args : args COMMA . arg  (11)
+
+	RETURN_TYPE_FUNC  shift 60
+	.  error
+
+	arg  goto 131
+
+
+state 98
+	return_stmt : RETURN ID . SEMICOLON  (44)
+
+	SEMICOLON  shift 132
+	.  error
+
+
+state 99
+	return_stmt_void : RETURN VOID . SEMICOLON  (45)
+
+	SEMICOLON  shift 133
+	.  error
+
+
+state 100
+	return_stmt : RETURN TRUE_KEY . SEMICOLON  (42)
+
+	SEMICOLON  shift 134
+	.  error
+
+
+state 101
+	return_stmt : RETURN FALSE_KEY . SEMICOLON  (43)
+
+	SEMICOLON  shift 135
+	.  error
+
+
+state 102
+	rest_m : RETURN $$7 . calls  (30)
+
+	CALL_STMT  shift 47
+	.  error
+
+	calls  goto 136
+
+
+state 103
+	body_method : body_method . rest  (19)
+	rest : LC_BRACE body_method . RC_BRACE  (21)
+
+	RC_BRACE  shift 137
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	rest  goto 105
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 104
+	func_method : METHOD VOID ID LP_BRACE RP_BRACE $$1 LC_BRACE body $$2 . RC_BRACE  (7)
+
+	RC_BRACE  shift 138
+	.  error
+
+
+state 105
+	body_method : body_method rest .  (19)
+
+	.  reduce 19
+
+
+state 106
+	decls : DECLARATION RETURN_TYPE_FUNC dec SEMICOLON .  (61)
+
+	.  reduce 61
+
+
+state 107
+	dec : dec COMMA . ID  (63)
+
+	ID  shift 139
+	.  error
+
+
+state 108
+	decls : DECLARATION ID dec SEMICOLON .  (62)
+
+	.  reduce 62
+
+
+state 109
+	unary_stmts : POSTINCR LP_BRACE extras RP_BRACE .  (85)
+
+	.  reduce 85
+
+
+state 110
+	unary_stmts : POSTDECR LP_BRACE extras RP_BRACE .  (86)
+
+	.  reduce 86
+
+
+state 111
+	predicate : LP_BRACE . predicate RP_BRACE  (90)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 140
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 112
+	expr_pred : NEG . expr_pred  (93)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	SEMICOLON  reduce 101
+	PREDICATE_OP  reduce 101
+	COMMA  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 141
+	arth_pred  goto 121
+
+
+state 113
+	arth_pred : ADD . LP_BRACE expr_pred COMMA expr_pred RP_BRACE  (96)
+
+	LP_BRACE  shift 142
+	.  error
+
+
+state 114
+	arth_pred : SUB . LP_BRACE expr_pred COMMA expr_pred RP_BRACE  (97)
+
+	LP_BRACE  shift 143
+	.  error
+
+
+state 115
+	arth_pred : MUL . LP_BRACE expr_pred COMMA expr_pred RP_BRACE  (98)
+
+	LP_BRACE  shift 144
+	.  error
+
+
+state 116
+	arth_pred : DIV . LP_BRACE expr_pred COMMA expr_pred RP_BRACE  (99)
+
+	LP_BRACE  shift 145
+	.  error
+
+
+state 117
+	expr_pred : calls .  (95)
+
+	.  reduce 95
+
+
+state 118
+	if_stmt : IF LP_BRACE predicate . RP_BRACE $$11 DO LC_BRACE body RC_BRACE  (58)
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+
+	RP_BRACE  shift 146
+	PREDICATE_OP  shift 147
+	AND  shift 148
+	OR  shift 149
+	.  error
+
+
+state 119
+	arth_pred : extras .  (100)
+
+	.  reduce 100
+
+
+state 120
+	predicate : expr_pred .  (91)
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+
+	ASSIGN  shift 150
+	RP_BRACE  reduce 91
+	SEMICOLON  reduce 91
+	PREDICATE_OP  reduce 91
+	AND  reduce 91
+	OR  reduce 91
+
+
+state 121
+	expr_pred : arth_pred .  (92)
+
+	.  reduce 92
+
+
+state 122
+	loops : FOR LP_BRACE exp_stmt . predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE  (52)
+	loops : FOR LP_BRACE exp_stmt . predicate SEMICOLON RP_BRACE $$10 LC_BRACE body RC_BRACE  (54)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	ASSIGN  reduce 101
+	SEMICOLON  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 151
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 123
+	exp_stmt : EXPRESSION ID ASSIGN . assign_exp SEMICOLON  (65)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 163
+
+
+state 124
+	calls : CALL_STMT ID LP_BRACE . RP_BRACE SEMICOLON  (82)
+
+	RP_BRACE  shift 164
+	.  error
+
+
+state 125
+	calls : CALL_STMT ID CALL_OP . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID CALL_OP . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+	calls : CALL_STMT ID CALL_OP . ID LP_BRACE RP_BRACE SEMICOLON  (81)
+
+	ID  shift 165
+	.  error
+
+
+state 126
+	calls : CALL_STMT ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (83)
+	calls : CALL_STMT ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (84)
+
+	ARGUMENTS  shift 166
+	.  error
+
+
+state 127
+	calls : CALL_STMT "this" CALL_OP . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" CALL_OP . ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	ID  shift 167
+	.  error
+
+
+state 128
+	loops : LOOP WHILE LP_BRACE . predicate RP_BRACE $$8 DO LC_BRACE body RC_BRACE  (50)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 168
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 129
+	otherwise_stmt : ELSE $$12 . LC_BRACE body RC_BRACE  (60)
+
+	LC_BRACE  shift 169
+	.  error
+
+
+state 130
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 . LC_BRACE body $$4 RC_BRACE  (10)
+
+	LC_BRACE  shift 170
+	.  error
+
+
+state 131
+	args : args COMMA arg .  (11)
+
+	.  reduce 11
+
+
+state 132
+	return_stmt : RETURN ID SEMICOLON .  (44)
+
+	.  reduce 44
+
+
+state 133
+	return_stmt_void : RETURN VOID SEMICOLON .  (45)
+
+	.  reduce 45
+
+
+state 134
+	return_stmt : RETURN TRUE_KEY SEMICOLON .  (42)
+
+	.  reduce 42
+
+
+state 135
+	return_stmt : RETURN FALSE_KEY SEMICOLON .  (43)
+
+	.  reduce 43
+
+
+state 136
+	rest_m : RETURN $$7 calls .  (30)
+
+	.  reduce 30
+
+
+state 137
+	rest : LC_BRACE body_method RC_BRACE .  (21)
+
+	.  reduce 21
+
+
+state 138
+	func_method : METHOD VOID ID LP_BRACE RP_BRACE $$1 LC_BRACE body $$2 RC_BRACE .  (7)
+
+	.  reduce 7
+
+
+state 139
+	dec : dec COMMA ID .  (63)
+
+	.  reduce 63
+
+
+state 140
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+	predicate : LP_BRACE predicate . RP_BRACE  (90)
+
+	RP_BRACE  shift 171
+	PREDICATE_OP  shift 147
+	AND  shift 148
+	OR  shift 149
+	.  error
+
+
+state 141
+	expr_pred : NEG expr_pred .  (93)
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+
+	ASSIGN  shift 150
+	RP_BRACE  reduce 93
+	SEMICOLON  reduce 93
+	PREDICATE_OP  reduce 93
+	COMMA  reduce 93
+	AND  reduce 93
+	OR  reduce 93
+
+
+state 142
+	arth_pred : ADD LP_BRACE . expr_pred COMMA expr_pred RP_BRACE  (96)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	ASSIGN  reduce 101
+	COMMA  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 172
+	arth_pred  goto 121
+
+
+state 143
+	arth_pred : SUB LP_BRACE . expr_pred COMMA expr_pred RP_BRACE  (97)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	ASSIGN  reduce 101
+	COMMA  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 173
+	arth_pred  goto 121
+
+
+state 144
+	arth_pred : MUL LP_BRACE . expr_pred COMMA expr_pred RP_BRACE  (98)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	ASSIGN  reduce 101
+	COMMA  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 174
+	arth_pred  goto 121
+
+
+state 145
+	arth_pred : DIV LP_BRACE . expr_pred COMMA expr_pred RP_BRACE  (99)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	ASSIGN  reduce 101
+	COMMA  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 175
+	arth_pred  goto 121
+
+
+state 146
+	if_stmt : IF LP_BRACE predicate RP_BRACE . $$11 DO LC_BRACE body RC_BRACE  (58)
+	$$11 : .  (57)
+
+	.  reduce 57
+
+	$$11  goto 176
+
+
+state 147
+	predicate : predicate PREDICATE_OP . predicate  (89)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	SEMICOLON  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 177
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 148
+	predicate : predicate AND . predicate  (87)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	SEMICOLON  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 178
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 149
+	predicate : predicate OR . predicate  (88)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	LP_BRACE  shift 111
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	SEMICOLON  reduce 101
+	PREDICATE_OP  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	predicate  goto 179
+	extras  goto 119
+	expr_pred  goto 120
+	arth_pred  goto 121
+
+
+state 150
+	expr_pred : expr_pred ASSIGN . NEG expr_pred  (94)
+
+	NEG  shift 180
+	.  error
+
+
+state 151
+	loops : FOR LP_BRACE exp_stmt predicate . SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE  (52)
+	loops : FOR LP_BRACE exp_stmt predicate . SEMICOLON RP_BRACE $$10 LC_BRACE body RC_BRACE  (54)
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+
+	SEMICOLON  shift 181
+	PREDICATE_OP  shift 147
+	AND  shift 148
+	OR  shift 149
+	.  error
+
+
+state 152
+	assign_exp : LP_BRACE . assign_exp RP_BRACE  (76)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 182
+
+
+state 153
+	assign_exp : ADD . LP_BRACE assign_exp COMMA assign_exp RP_BRACE  (72)
+
+	LP_BRACE  shift 183
+	.  error
+
+
+state 154
+	assign_exp : SUB . LP_BRACE assign_exp COMMA assign_exp RP_BRACE  (73)
+
+	LP_BRACE  shift 184
+	.  error
+
+
+state 155
+	assign_exp : MUL . LP_BRACE assign_exp COMMA assign_exp RP_BRACE  (74)
+
+	LP_BRACE  shift 185
+	.  error
+
+
+state 156
+	assign_exp : DIV . LP_BRACE assign_exp COMMA assign_exp RP_BRACE  (75)
+
+	LP_BRACE  shift 186
+	.  error
+
+
+state 157
+	assign_exp : INTEGERS .  (67)
+
+	.  reduce 67
+
+
+state 158
+	assign_exp : ID .  (69)
+
+	.  reduce 69
+
+
+state 159
+	assign_exp : ARGUMENTS .  (68)
+
+	.  reduce 68
+
+
+state 160
+	assign_exp : "true" .  (70)
+
+	.  reduce 70
+
+
+state 161
+	assign_exp : "false" .  (71)
+
+	.  reduce 71
+
+
+state 162
+	assign_exp : unary_stmts .  (66)
+
+	.  reduce 66
+
+
+state 163
+	exp_stmt : EXPRESSION ID ASSIGN assign_exp . SEMICOLON  (65)
+
+	SEMICOLON  shift 187
+	.  error
+
+
+state 164
+	calls : CALL_STMT ID LP_BRACE RP_BRACE . SEMICOLON  (82)
+
+	SEMICOLON  shift 188
+	.  error
+
+
+state 165
+	calls : CALL_STMT ID CALL_OP ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID CALL_OP ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+	calls : CALL_STMT ID CALL_OP ID . LP_BRACE RP_BRACE SEMICOLON  (81)
+
+	LP_BRACE  shift 189
+	LSQ_BRACE  shift 190
+	.  error
+
+
+state 166
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (83)
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (84)
+
+	RSQ_BRACE  shift 191
+	.  error
+
+
+state 167
+	calls : CALL_STMT "this" CALL_OP ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" CALL_OP ID . LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	LSQ_BRACE  shift 192
+	.  error
+
+
+state 168
+	loops : LOOP WHILE LP_BRACE predicate . RP_BRACE $$8 DO LC_BRACE body RC_BRACE  (50)
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+
+	RP_BRACE  shift 193
+	PREDICATE_OP  shift 147
+	AND  shift 148
+	OR  shift 149
+	.  error
+
+
+state 169
+	otherwise_stmt : ELSE $$12 LC_BRACE . body RC_BRACE  (60)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 194
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 170
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE . body $$4 RC_BRACE  (10)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 195
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 171
+	predicate : LP_BRACE predicate RP_BRACE .  (90)
+
+	.  reduce 90
+
+
+state 172
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : ADD LP_BRACE expr_pred . COMMA expr_pred RP_BRACE  (96)
+
+	ASSIGN  shift 150
+	COMMA  shift 196
+	.  error
+
+
+state 173
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : SUB LP_BRACE expr_pred . COMMA expr_pred RP_BRACE  (97)
+
+	ASSIGN  shift 150
+	COMMA  shift 197
+	.  error
+
+
+state 174
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : MUL LP_BRACE expr_pred . COMMA expr_pred RP_BRACE  (98)
+
+	ASSIGN  shift 150
+	COMMA  shift 198
+	.  error
+
+
+state 175
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : DIV LP_BRACE expr_pred . COMMA expr_pred RP_BRACE  (99)
+
+	ASSIGN  shift 150
+	COMMA  shift 199
+	.  error
+
+
+state 176
+	if_stmt : IF LP_BRACE predicate RP_BRACE $$11 . DO LC_BRACE body RC_BRACE  (58)
+
+	DO  shift 200
+	.  error
+
+
+state 177
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+	predicate : predicate PREDICATE_OP predicate .  (89)
+
+	.  reduce 89
+
+
+state 178
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate AND predicate .  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+
+	.  reduce 87
+
+
+state 179
+	predicate : predicate . AND predicate  (87)
+	predicate : predicate . OR predicate  (88)
+	predicate : predicate OR predicate .  (88)
+	predicate : predicate . PREDICATE_OP predicate  (89)
+
+	.  reduce 88
+
+
+state 180
+	expr_pred : expr_pred ASSIGN NEG . expr_pred  (94)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+	SEMICOLON  reduce 101
+	PREDICATE_OP  reduce 101
+	COMMA  reduce 101
+	AND  reduce 101
+	OR  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 201
+	arth_pred  goto 121
+
+
+state 181
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON . unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE  (52)
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON . RP_BRACE $$10 LC_BRACE body RC_BRACE  (54)
+
+	RP_BRACE  shift 202
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	unary_stmts  goto 203
+
+
+state 182
+	assign_exp : LP_BRACE assign_exp . RP_BRACE  (76)
+
+	RP_BRACE  shift 204
+	.  error
+
+
+state 183
+	assign_exp : ADD LP_BRACE . assign_exp COMMA assign_exp RP_BRACE  (72)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 205
+
+
+state 184
+	assign_exp : SUB LP_BRACE . assign_exp COMMA assign_exp RP_BRACE  (73)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 206
+
+
+state 185
+	assign_exp : MUL LP_BRACE . assign_exp COMMA assign_exp RP_BRACE  (74)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 207
+
+
+state 186
+	assign_exp : DIV LP_BRACE . assign_exp COMMA assign_exp RP_BRACE  (75)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 208
+
+
+state 187
+	exp_stmt : EXPRESSION ID ASSIGN assign_exp SEMICOLON .  (65)
+
+	.  reduce 65
+
+
+state 188
+	calls : CALL_STMT ID LP_BRACE RP_BRACE SEMICOLON .  (82)
+
+	.  reduce 82
+
+
+state 189
+	calls : CALL_STMT ID CALL_OP ID LP_BRACE . RP_BRACE SEMICOLON  (81)
+
+	RP_BRACE  shift 209
+	.  error
+
+
+state 190
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+
+	ARGUMENTS  shift 210
+	.  error
+
+
+state 191
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE INTEGERS RP_BRACE SEMICOLON  (83)
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (84)
+
+	LP_BRACE  shift 211
+	.  error
+
+
+state 192
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE . ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	ARGUMENTS  shift 212
+	.  error
+
+
+state 193
+	loops : LOOP WHILE LP_BRACE predicate RP_BRACE . $$8 DO LC_BRACE body RC_BRACE  (50)
+	$$8 : .  (49)
+
+	.  reduce 49
+
+	$$8  goto 213
+
+
+state 194
+	otherwise_stmt : ELSE $$12 LC_BRACE body . RC_BRACE  (60)
+
+	RC_BRACE  shift 214
+	.  error
+
+
+state 195
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body . $$4 RC_BRACE  (10)
+	$$4 : .  (9)
+
+	.  reduce 9
+
+	$$4  goto 215
+
+
+state 196
+	arth_pred : ADD LP_BRACE expr_pred COMMA . expr_pred RP_BRACE  (96)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 216
+	arth_pred  goto 121
+
+
+state 197
+	arth_pred : SUB LP_BRACE expr_pred COMMA . expr_pred RP_BRACE  (97)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 217
+	arth_pred  goto 121
+
+
+state 198
+	arth_pred : MUL LP_BRACE expr_pred COMMA . expr_pred RP_BRACE  (98)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 218
+	arth_pred  goto 121
+
+
+state 199
+	arth_pred : DIV LP_BRACE expr_pred COMMA . expr_pred RP_BRACE  (99)
+	extras : .  (101)
+
+	CALL_STMT  shift 47
+	NEG  shift 112
+	ADD  shift 113
+	SUB  shift 114
+	MUL  shift 115
+	DIV  shift 116
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 78
+	ID  shift 79
+	ARGUMENTS  shift 80
+	RP_BRACE  reduce 101
+	ASSIGN  reduce 101
+
+	calls  goto 117
+	unary_stmts  goto 81
+	extras  goto 119
+	expr_pred  goto 219
+	arth_pred  goto 121
+
+
+state 200
+	if_stmt : IF LP_BRACE predicate RP_BRACE $$11 DO . LC_BRACE body RC_BRACE  (58)
+
+	LC_BRACE  shift 220
+	.  error
+
+
+state 201
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	expr_pred : expr_pred ASSIGN NEG expr_pred .  (94)
+
+	ASSIGN  shift 150
+	RP_BRACE  reduce 94
+	SEMICOLON  reduce 94
+	PREDICATE_OP  reduce 94
+	COMMA  reduce 94
+	AND  reduce 94
+	OR  reduce 94
+
+
+state 202
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE . $$10 LC_BRACE body RC_BRACE  (54)
+	$$10 : .  (53)
+
+	.  reduce 53
+
+	$$10  goto 221
+
+
+state 203
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts . RP_BRACE $$9 LC_BRACE body RC_BRACE  (52)
+
+	RP_BRACE  shift 222
+	.  error
+
+
+state 204
+	assign_exp : LP_BRACE assign_exp RP_BRACE .  (76)
+
+	.  reduce 76
+
+
+state 205
+	assign_exp : ADD LP_BRACE assign_exp . COMMA assign_exp RP_BRACE  (72)
+
+	COMMA  shift 223
+	.  error
+
+
+state 206
+	assign_exp : SUB LP_BRACE assign_exp . COMMA assign_exp RP_BRACE  (73)
+
+	COMMA  shift 224
+	.  error
+
+
+state 207
+	assign_exp : MUL LP_BRACE assign_exp . COMMA assign_exp RP_BRACE  (74)
+
+	COMMA  shift 225
+	.  error
+
+
+state 208
+	assign_exp : DIV LP_BRACE assign_exp . COMMA assign_exp RP_BRACE  (75)
+
+	COMMA  shift 226
+	.  error
+
+
+state 209
+	calls : CALL_STMT ID CALL_OP ID LP_BRACE RP_BRACE . SEMICOLON  (81)
+
+	SEMICOLON  shift 227
+	.  error
+
+
+state 210
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+
+	RSQ_BRACE  shift 228
+	.  error
+
+
+state 211
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . INTEGERS RP_BRACE SEMICOLON  (83)
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . ARGUMENTS RP_BRACE SEMICOLON  (84)
+
+	INTEGERS  shift 229
+	ARGUMENTS  shift 230
+	.  error
+
+
+state 212
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS . RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	RSQ_BRACE  shift 231
+	.  error
+
+
+state 213
+	loops : LOOP WHILE LP_BRACE predicate RP_BRACE $$8 . DO LC_BRACE body RC_BRACE  (50)
+
+	DO  shift 232
+	.  error
+
+
+state 214
+	otherwise_stmt : ELSE $$12 LC_BRACE body RC_BRACE .  (60)
+
+	.  reduce 60
+
+
+state 215
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 . RC_BRACE  (10)
+
+	RC_BRACE  shift 233
+	.  error
+
+
+state 216
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : ADD LP_BRACE expr_pred COMMA expr_pred . RP_BRACE  (96)
+
+	RP_BRACE  shift 234
+	ASSIGN  shift 150
+	.  error
+
+
+state 217
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : SUB LP_BRACE expr_pred COMMA expr_pred . RP_BRACE  (97)
+
+	RP_BRACE  shift 235
+	ASSIGN  shift 150
+	.  error
+
+
+state 218
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : MUL LP_BRACE expr_pred COMMA expr_pred . RP_BRACE  (98)
+
+	RP_BRACE  shift 236
+	ASSIGN  shift 150
+	.  error
+
+
+state 219
+	expr_pred : expr_pred . ASSIGN NEG expr_pred  (94)
+	arth_pred : DIV LP_BRACE expr_pred COMMA expr_pred . RP_BRACE  (99)
+
+	RP_BRACE  shift 237
+	ASSIGN  shift 150
+	.  error
+
+
+state 220
+	if_stmt : IF LP_BRACE predicate RP_BRACE $$11 DO LC_BRACE . body RC_BRACE  (58)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 238
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 221
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE $$10 . LC_BRACE body RC_BRACE  (54)
+
+	LC_BRACE  shift 239
+	.  error
+
+
+state 222
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE . $$9 LC_BRACE body RC_BRACE  (52)
+	$$9 : .  (51)
+
+	.  reduce 51
+
+	$$9  goto 240
+
+
+state 223
+	assign_exp : ADD LP_BRACE assign_exp COMMA . assign_exp RP_BRACE  (72)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 241
+
+
+state 224
+	assign_exp : SUB LP_BRACE assign_exp COMMA . assign_exp RP_BRACE  (73)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 242
+
+
+state 225
+	assign_exp : MUL LP_BRACE assign_exp COMMA . assign_exp RP_BRACE  (74)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 243
+
+
+state 226
+	assign_exp : DIV LP_BRACE assign_exp COMMA . assign_exp RP_BRACE  (75)
+
+	LP_BRACE  shift 152
+	ADD  shift 153
+	SUB  shift 154
+	MUL  shift 155
+	DIV  shift 156
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	INTEGERS  shift 157
+	ID  shift 158
+	ARGUMENTS  shift 159
+	"true"  shift 160
+	"false"  shift 161
+	.  error
+
+	unary_stmts  goto 162
+	assign_exp  goto 244
+
+
+state 227
+	calls : CALL_STMT ID CALL_OP ID LP_BRACE RP_BRACE SEMICOLON .  (81)
+
+	.  reduce 81
+
+
+state 228
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (79)
+
+	LP_BRACE  shift 245
+	.  error
+
+
+state 229
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS . RP_BRACE SEMICOLON  (83)
+
+	RP_BRACE  shift 246
+	.  error
+
+
+state 230
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS . RP_BRACE SEMICOLON  (84)
+
+	RP_BRACE  shift 247
+	.  error
+
+
+state 231
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE . LP_BRACE ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	LP_BRACE  shift 248
+	.  error
+
+
+state 232
+	loops : LOOP WHILE LP_BRACE predicate RP_BRACE $$8 DO . LC_BRACE body RC_BRACE  (50)
+
+	LC_BRACE  shift 249
+	.  error
+
+
+state 233
+	func_method : METHOD RETURN_TYPE_FUNC ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE args RP_BRACE $$3 LC_BRACE body $$4 RC_BRACE .  (10)
+
+	.  reduce 10
+
+
+state 234
+	arth_pred : ADD LP_BRACE expr_pred COMMA expr_pred RP_BRACE .  (96)
+
+	.  reduce 96
+
+
+state 235
+	arth_pred : SUB LP_BRACE expr_pred COMMA expr_pred RP_BRACE .  (97)
+
+	.  reduce 97
+
+
+state 236
+	arth_pred : MUL LP_BRACE expr_pred COMMA expr_pred RP_BRACE .  (98)
+
+	.  reduce 98
+
+
+state 237
+	arth_pred : DIV LP_BRACE expr_pred COMMA expr_pred RP_BRACE .  (99)
+
+	.  reduce 99
+
+
+state 238
+	if_stmt : IF LP_BRACE predicate RP_BRACE $$11 DO LC_BRACE body . RC_BRACE  (58)
+
+	RC_BRACE  shift 250
+	.  error
+
+
+state 239
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE $$10 LC_BRACE . body RC_BRACE  (54)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 251
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 240
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 . LC_BRACE body RC_BRACE  (52)
+
+	LC_BRACE  shift 252
+	.  error
+
+
+state 241
+	assign_exp : ADD LP_BRACE assign_exp COMMA assign_exp . RP_BRACE  (72)
+
+	RP_BRACE  shift 253
+	.  error
+
+
+state 242
+	assign_exp : SUB LP_BRACE assign_exp COMMA assign_exp . RP_BRACE  (73)
+
+	RP_BRACE  shift 254
+	.  error
+
+
+state 243
+	assign_exp : MUL LP_BRACE assign_exp COMMA assign_exp . RP_BRACE  (74)
+
+	RP_BRACE  shift 255
+	.  error
+
+
+state 244
+	assign_exp : DIV LP_BRACE assign_exp COMMA assign_exp . RP_BRACE  (75)
+
+	RP_BRACE  shift 256
+	.  error
+
+
+state 245
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . INTEGERS RP_BRACE SEMICOLON  (77)
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . ARGUMENTS RP_BRACE SEMICOLON  (79)
+
+	INTEGERS  shift 257
+	ARGUMENTS  shift 258
+	.  error
+
+
+state 246
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE . SEMICOLON  (83)
+
+	SEMICOLON  shift 259
+	.  error
+
+
+state 247
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE . SEMICOLON  (84)
+
+	SEMICOLON  shift 260
+	.  error
+
+
+state 248
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . INTEGERS RP_BRACE SEMICOLON  (78)
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE . ARGUMENTS RP_BRACE SEMICOLON  (80)
+
+	INTEGERS  shift 261
+	ARGUMENTS  shift 262
+	.  error
+
+
+state 249
+	loops : LOOP WHILE LP_BRACE predicate RP_BRACE $$8 DO LC_BRACE . body RC_BRACE  (50)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 263
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 250
+	if_stmt : IF LP_BRACE predicate RP_BRACE $$11 DO LC_BRACE body RC_BRACE .  (58)
+
+	.  reduce 58
+
+
+state 251
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE $$10 LC_BRACE body . RC_BRACE  (54)
+
+	RC_BRACE  shift 264
+	.  error
+
+
+state 252
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE . body RC_BRACE  (52)
+
+	IF  shift 44
+	FOR  shift 45
+	DECLARATION  shift 27
+	EXPRESSION  shift 46
+	CALL_STMT  shift 47
+	RETURN  shift 63
+	LC_BRACE  shift 64
+	LOOP  shift 48
+	POSTINCR  shift 28
+	POSTDECR  shift 29
+	.  error
+
+	body  goto 265
+	body_method  goto 66
+	rest  goto 67
+	rest_m  goto 68
+	decls  goto 69
+	stmts  goto 70
+	exp_stmt  goto 71
+	calls  goto 72
+	return_stmt  goto 73
+	return_stmt_void  goto 74
+	unary_stmts  goto 55
+	loops  goto 57
+	cond_stmts  goto 58
+	if_stmt  goto 59
+
+
+state 253
+	assign_exp : ADD LP_BRACE assign_exp COMMA assign_exp RP_BRACE .  (72)
+
+	.  reduce 72
+
+
+state 254
+	assign_exp : SUB LP_BRACE assign_exp COMMA assign_exp RP_BRACE .  (73)
+
+	.  reduce 73
+
+
+state 255
+	assign_exp : MUL LP_BRACE assign_exp COMMA assign_exp RP_BRACE .  (74)
+
+	.  reduce 74
+
+
+state 256
+	assign_exp : DIV LP_BRACE assign_exp COMMA assign_exp RP_BRACE .  (75)
+
+	.  reduce 75
+
+
+state 257
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS . RP_BRACE SEMICOLON  (77)
+
+	RP_BRACE  shift 266
+	.  error
+
+
+state 258
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS . RP_BRACE SEMICOLON  (79)
+
+	RP_BRACE  shift 267
+	.  error
+
+
+state 259
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON .  (83)
+
+	.  reduce 83
+
+
+state 260
+	calls : CALL_STMT ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON .  (84)
+
+	.  reduce 84
+
+
+state 261
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS . RP_BRACE SEMICOLON  (78)
+
+	RP_BRACE  shift 268
+	.  error
+
+
+state 262
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS . RP_BRACE SEMICOLON  (80)
+
+	RP_BRACE  shift 269
+	.  error
+
+
+state 263
+	loops : LOOP WHILE LP_BRACE predicate RP_BRACE $$8 DO LC_BRACE body . RC_BRACE  (50)
+
+	RC_BRACE  shift 270
+	.  error
+
+
+state 264
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON RP_BRACE $$10 LC_BRACE body RC_BRACE .  (54)
+
+	.  reduce 54
+
+
+state 265
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body . RC_BRACE  (52)
+
+	RC_BRACE  shift 271
+	.  error
+
+
+state 266
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE . SEMICOLON  (77)
+
+	SEMICOLON  shift 272
+	.  error
+
+
+state 267
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE . SEMICOLON  (79)
+
+	SEMICOLON  shift 273
+	.  error
+
+
+state 268
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE . SEMICOLON  (78)
+
+	SEMICOLON  shift 274
+	.  error
+
+
+state 269
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE . SEMICOLON  (80)
+
+	SEMICOLON  shift 275
+	.  error
+
+
+state 270
+	loops : LOOP WHILE LP_BRACE predicate RP_BRACE $$8 DO LC_BRACE body RC_BRACE .  (50)
+
+	.  reduce 50
+
+
+state 271
+	loops : FOR LP_BRACE exp_stmt predicate SEMICOLON unary_stmts RP_BRACE $$9 LC_BRACE body RC_BRACE .  (52)
+
+	.  reduce 52
+
+
+state 272
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON .  (77)
+
+	.  reduce 77
+
+
+state 273
+	calls : CALL_STMT ID CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON .  (79)
+
+	.  reduce 79
+
+
+state 274
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE INTEGERS RP_BRACE SEMICOLON .  (78)
+
+	.  reduce 78
+
+
+state 275
+	calls : CALL_STMT "this" CALL_OP ID LSQ_BRACE ARGUMENTS RSQ_BRACE LP_BRACE ARGUMENTS RP_BRACE SEMICOLON .  (80)
+
+	.  reduce 80
+
+
+44 terminals, 44 nonterminals
+106 grammar rules, 276 states
+
+grammar parser grammar
+symbol# value# symbol
+     0      0  $end
+     1    256  error
+     2    257  RC_BRACE
+     3    258  IF
+     4    259  DO
+     5    260  ELSE
+     6    261  WHILE
+     7    262  FOR
+     8    263  CLASS
+     9    264  METHOD
+    10    265  DECLARATION
+    11    266  EXPRESSION
+    12    267  CALL_STMT
+    13    268  RETURN
+    14    269  RETURN_TYPE_FUNC
+    15    270  LC_BRACE
+    16    271  LP_BRACE
+    17    272  RP_BRACE
+    18    273  ASSIGN
+    19    274  NEG
+    20    275  ADD
+    21    276  SUB
+    22    277  MUL
+    23    278  DIV
+    24    279  LOOP
+    25    280  POSTINCR
+    26    281  POSTDECR
+    27    282  INTEGERS
+    28    283  ID
+    29    284  SEMICOLON
+    30    285  CALL_OP
+    31    286  PREDICATE_OP
+    32    287  LSQ_BRACE
+    33    288  RSQ_BRACE
+    34    289  COMMA
+    35    290  VOID
+    36    291  ARGUMENTS
+    37    292  AND
+    38    293  OR
+    39    294  TRUE_KEY
+    40    295  FALSE_KEY
+    41    296  "true"
+    42    297  "false"
+    43    298  "this"
+    44    299  $accept
+    45    300  program
+    46    301  func
+    47    302  func_method
+    48    303  func_class
+    49    304  $$1
+    50    305  body
+    51    306  $$2
+    52    307  args
+    53    308  $$3
+    54    309  $$4
+    55    310  arg
+    56    311  $$5
+    57    312  body_class
+    58    313  $$6
+    59    314  body_class_methods
+    60    315  body_method
+    61    316  rest
+    62    317  rest_m
+    63    318  decls
+    64    319  stmts
+    65    320  exp_stmt
+    66    321  calls
+    67    322  return_stmt
+    68    323  return_stmt_void
+    69    324  $$7
+    70    325  rest_class
+    71    326  unary_stmts
+    72    327  rest_class_methods
+    73    328  loops
+    74    329  cond_stmts
+    75    330  predicate
+    76    331  $$8
+    77    332  $$9
+    78    333  $$10
+    79    334  if_stmt
+    80    335  otherwise_stmt
+    81    336  $$11
+    82    337  $$12
+    83    338  dec
+    84    339  assign_exp
+    85    340  extras
+    86    341  expr_pred
+    87    342  arth_pred

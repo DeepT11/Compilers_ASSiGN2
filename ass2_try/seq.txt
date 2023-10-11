@@ -1,0 +1,23 @@
+function: global
+datatype: void
+ID: foo
+special symbol: (
+special symbol: )
+special symbol: {
+special symbol: {
+special symbol: }
+special symbol: {
+reserved keyword: expr
+ID: v
+operator: =
+constant: 0
+punctuation: ;
+reserved keyword: declare
+datatype: int
+ID: x
+punctuation: ;
+special symbol: }
+reserved keyword: return
+ID: v
+punctuation: ;
+special symbol: }

@@ -1,0 +1,14 @@
+global void test() 
+{
+    declare char t;
+    expr t = add(t,j);
+    expr x = 5 lt 3;
+    in case that ( (neg(x and y)))
+    do 
+    {
+        return x lt y;
+    }
+    
+    return call r->st[4]('h',add(v,c));
+    
+}

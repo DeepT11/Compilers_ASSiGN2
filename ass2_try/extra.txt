@@ -1,0 +1,80 @@
+body_method : stmts 
+            | decls
+            | exprs
+            | calls
+            | decls stmts
+            | decls exprs
+            | decls exprs calls stmts  
+            | exprs decls calls stmts 
+            | decls calls stmts 
+            | decls exprs stmts
+            | decls exprs stmts calls
+            | exprs decls stmts calls
+            | exprs stmts
+            | exprs decls
+            | exprs calls stmts
+            | decls calls
+            | exprs calls
+            ;
+
+
+
+body_class : decls
+            |exprs
+            |calls
+            |stmts
+            |decls stmts
+            |decls exprs
+            |decls exprs calls
+            |decls calls exprs
+            |decls calls stmts
+            |decls stmts calls
+            |decls exprs stmts calls
+            |decls exprs calls stmts
+            |decls stmts exprs calls
+            |decls stmts calls exprs
+            |decls 
+            |decls exprs calls stmts func_method 
+            |exprs decls calls stmts func_method
+            ;
+
+predicate: predicate AND predicate
+        | predicate OR predicate
+        | predicate PREDICATE_OP predicate 
+        | NEG predicate 
+        | expr_pred  
+
+expr_pred:ADD LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | SUB LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | MUL LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | DIV LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | LP_BRACE expr_pred RP_BRACE 
+    | calls
+    | INTEGERS
+    | ARGUMENTS
+    | ID
+    | unary_stmts
+
+body_method_void : body_method_void rest_void | rest_void
+rest_void : stmts| decl_stmt| exp_stmt| calls| return_stmt_void {flag_void++;}
+
+decl_stmt : DECLARATION RETURN_TYPE_FUNC ID SEMICOLON  
+          
+
+predicate: predicate AND predicate
+        | predicate OR predicate
+        | predicate PREDICATE_OP predicate 
+        | LP_BRACE predicate RP_BRACE 
+        | expr_pred  
+
+expr_pred:ADD LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | SUB LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | MUL LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | DIV LP_BRACE expr_pred COMMA expr_pred RP_BRACE
+    | NEG expr_pred 
+    | expr_pred ASSIGN NEG expr_pred 
+    | calls
+    | INTEGERS
+    | ARGUMENTS
+    | ID  
+    | unary_stmts

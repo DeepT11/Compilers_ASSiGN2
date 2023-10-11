@@ -1,0 +1,15 @@
+class  class_bar [1] 
+{
+  declare bool x ; 
+  declare int y ; 
+   local int _bar [1]( int x )
+   {
+    expr h = add(postincr(y),2); 
+    for ( expr v = 10 ; v leq 0 ; postdecr(v))
+    {
+      postincr(y);
+    }
+    return true;
+  }
+
+}

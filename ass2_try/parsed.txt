@@ -1,0 +1,8 @@
+global void foo () : function definition
+{
+  {}
+    {expr v = 0 ; :  expression statement
+    declare int x ; :  declaration statement  }
+   return v ; : return statement
+  
+}

@@ -1,0 +1,19 @@
+local int foo[2] (int x) 
+{
+  declare int x ; 
+  declare int y ; 
+  expr x = 8; 
+  declare int i ;
+  loop while ( (i lt x) and (k geq h)) 
+  do
+  {
+    expr y = i ; 
+    postincr ( postincr (i)); 
+  }
+  in case that ( x eq true ) 
+  do
+  {
+    return y ; 
+  }
+  
+}

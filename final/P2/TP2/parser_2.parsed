@@ -1,0 +1,19 @@
+local int foo[2] (int x) : function definition
+{
+  declare int x ; :  declaration statement
+  declare int y ; :  declaration statement
+  expr x = 8; :  expression statement
+  declare int i ; :  declaration statement
+  loop while ( (i lt x) and (k geq h)) : loop
+  do
+  {
+    expr y = i ; :  expression statement
+    postincr ( postincr (i)); : call statement 
+  }
+  in case that ( x eq true ) : conditional statement
+  do
+  {
+    return y ; : return statement
+  }
+  
+}

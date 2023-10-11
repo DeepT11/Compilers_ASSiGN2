@@ -1,0 +1,26 @@
+reserved keyword: global
+datatype: void
+ID: foo
+special symbol: (
+special symbol: )
+special symbol: {
+special symbol: {
+reserved keyword: expr
+ID: v
+operator: =
+constant: 0
+punctuation: ;
+reserved keyword: declare
+datatype: int
+ID: x
+punctuation: ;
+special symbol: }
+operator: postincr
+special symbol: (
+ID: i
+special symbol: )
+punctuation: ;
+reserved keyword: return
+datatype: void
+punctuation: ;
+special symbol: }

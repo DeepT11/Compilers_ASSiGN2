@@ -1,0 +1,72 @@
+reserved keyword: local
+datatype: int
+ID: foo
+special symbol: [
+constant: 2
+special symbol: ]
+special symbol: (
+datatype: int
+ID: x
+special symbol: )
+special symbol: {
+reserved keyword: declare
+datatype: int
+ID: x
+punctuation: ;
+reserved keyword: declare
+datatype: int
+ID: y
+punctuation: ;
+reserved keyword: expr
+ID: x
+operator: =
+constant: 8
+punctuation: ;
+reserved keyword: declare
+datatype: int
+ID: i
+punctuation: ;
+reserved keyword: loop
+reserved keyword: while
+special symbol: (
+special symbol: (
+ID: i
+reserved keyword: lt
+ID: x
+special symbol: )
+reserved keyword: and
+special symbol: (
+ID: k
+reserved keyword: geq
+ID: h
+special symbol: )
+special symbol: )
+reserved keyword: do
+special symbol: {
+reserved keyword: expr
+ID: y
+operator: =
+ID: i
+punctuation: ;
+operator: postincr
+special symbol: (
+operator: postincr
+special symbol: (
+ID: i
+special symbol: )
+special symbol: )
+punctuation: ;
+special symbol: }
+reserved keyword: in case that
+special symbol: (
+ID: x
+reserved keyword: eq
+reserved keyword: true
+special symbol: )
+reserved keyword: do
+special symbol: {
+reserved keyword: return
+ID: y
+punctuation: ;
+special symbol: }
+special symbol: }

@@ -1,0 +1,66 @@
+reserved keyword: class
+ID: class_bar
+special symbol: [
+constant: 1
+special symbol: ]
+special symbol: {
+reserved keyword: declare
+datatype: bool
+ID: x
+punctuation: ;
+reserved keyword: declare
+datatype: int
+ID: y
+punctuation: ;
+function: local
+datatype: int
+ID: _bar
+special symbol: [
+constant: 1
+special symbol: ]
+special symbol: (
+datatype: int
+ID: x
+special symbol: )
+special symbol: {
+reserved keyword: expr
+ID: h
+operator: =
+operator: add
+special symbol: (
+operator: postincr
+special symbol: (
+ID: y
+special symbol: )
+punctuation: ,
+constant: 2
+special symbol: )
+punctuation: ;
+reserved keyword: for
+special symbol: (
+reserved keyword: expr
+ID: v
+operator: =
+constant: 10
+punctuation: ;
+ID: v
+reserved keyword: leq
+constant: 0
+punctuation: ;
+operator: postdecr
+special symbol: (
+ID: v
+special symbol: )
+special symbol: )
+special symbol: {
+operator: postincr
+special symbol: (
+ID: y
+special symbol: )
+punctuation: ;
+special symbol: }
+reserved keyword: return
+reserved keyword: true
+punctuation: ;
+special symbol: }
+special symbol: }

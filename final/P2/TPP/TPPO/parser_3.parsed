@@ -1,0 +1,15 @@
+class  class_bar [1] : class definition
+{
+  declare bool x ; :  declaration statement
+  declare int y ; :  declaration statement
+   local int _bar [1]( int x ) : function definition
+  {
+    expr h = add(postincr(y),2); :  expression statement
+    for ( expr v = 10 ; v leq 0 ; postdecr(v)) : loop
+    {
+      postincr(y); : call statement 
+    }
+    return true; : return statement
+  }
+
+}
